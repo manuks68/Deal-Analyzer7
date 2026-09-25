@@ -18,7 +18,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="AnuksDealMobile Calc" name="apple-mobile-web-app-title"/>
-<meta content="2026.09.24.signup-email-code-v22" name="app-version"/>
+<meta content="2026.09.24.storage-user-identity-v23" name="app-version"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Native mobile keyboard prediction enabled for Deal Name, Submarket, and Broker Name. Custom suggestion UI and keystroke capitalization removed to avoid interfering with iPhone keyboard suggestions. -->
 
@@ -4761,66 +4761,93 @@ async function showStorageDiagnostics(){
   try{
     const localDeals = getSavedDealsForSync();
     const localCount = localDeals.length;
-    
+
     const client=anuksSupabaseClient||initCloudClient();
     const user=await getCloudUser();
-    
+
     let cloudCount = 0;
     let cloudInfo = 'Not signed in or not connected';
-    
+    let signedInEmail = 'Not signed in';
+    let signedInUserId = 'Not available';
+
     if(client && user){
+      signedInEmail = user.email || 'Email not returned by Supabase';
+      signedInUserId = user.id || 'User ID not returned by Supabase';
+
       const result = await client.from('saved_deals')
         .select('id,user_id,deal_key,name,submarket,updated_at', {count: 'exact'})
         .eq('user_id',user.id);
-      
+
       if(!result.error){
         cloudCount = result.data?.length || 0;
-        cloudInfo = `<span style="font-size:16px;font-weight:bold;color:#1e3a8a;">${cloudCount} record(s)</span> saved by this User ID`;
+        cloudInfo = `<span style="font-size:16px;font-weight:bold;color:#1e3a8a;">${cloudCount} record(s)</span> owned by the signed-in User ID`;
       } else {
         cloudInfo = 'Error: ' + result.error.message;
       }
-      
-      // Also check for any records without user filter (shows total in table)
+
+      // Also check total visible records in the table.
+      // RLS may limit this total to only rows the signed-in user is allowed to see.
       const totalResult = await client.from('saved_deals')
         .select('id', {count: 'exact'});
       const totalCount = totalResult.data?.length || 0;
-      
-      if(totalCount > cloudCount){
-        cloudInfo += '<br><span style="font-size:12px;color:#6b7280;">(Database total: ' + totalCount + ' records - includes other users\' data)</span>';
+
+      if(!totalResult.error && totalCount > cloudCount){
+        cloudInfo += '<br><span style="font-size:12px;color:#6b7280;">(Visible database total: ' + totalCount + ' records)</span>';
       }
     }
-    
+
     const currentDisplay = savedDeals.length;
-    
+
+    const esc = (value) => String(value ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+
     // Create custom modal for better mobile display
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.innerHTML = `
-      <div class="modal" style="max-width:380px;width:92%;max-height:85vh;overflow-y:auto;">
+      <div class="modal" style="max-width:400px;width:92%;max-height:88vh;overflow-y:auto;">
         <h3 style="margin:0 0 16px;font-size:17px;color:#111827;border-bottom:2px solid #007bff;padding-bottom:10px;">
           📊 STORAGE DIAGNOSTICS
         </h3>
+
         <div style="font-size:14px;line-height:1.6;color:#374151;">
+
+          <div style="margin-bottom:14px;padding:10px;background:#eef2ff;border-left:3px solid #4f46e5;border-radius:4px;">
+            <strong style="color:#3730a3;">👤 Signed-In Cloud Account:</strong><br>
+            <div style="margin-top:5px;">
+              <span style="font-size:12px;color:#6b7280;">Email</span><br>
+              <span style="font-size:14px;font-weight:bold;color:#312e81;overflow-wrap:anywhere;">${esc(signedInEmail)}</span>
+            </div>
+            <div style="margin-top:7px;">
+              <span style="font-size:12px;color:#6b7280;">Supabase User ID</span><br>
+              <span style="font-size:12px;font-weight:bold;color:#312e81;overflow-wrap:anywhere;word-break:break-all;">${esc(signedInUserId)}</span>
+            </div>
+          </div>
+
           <div style="margin-bottom:14px;padding:10px;background:#dcfce7;border-left:3px solid #22c55e;border-radius:4px;">
             <strong style="color:#166534;">✅ Currently Displayed:</strong><br>
             <span style="font-size:16px;font-weight:bold;color:#166534;">${currentDisplay} deal(s)</span>
           </div>
-          
+
           <div style="margin-bottom:14px;padding:10px;background:#f3f4f6;border-left:3px solid #6b7280;border-radius:4px;">
             <strong style="color:#374151;">💾 Local Storage (Browser):</strong><br>
             <span style="font-size:16px;font-weight:bold;color:#1f2937;">${localCount} deal(s)</span> in localStorage
           </div>
-          
+
           <div style="margin-bottom:16px;padding:10px;background:#dbeafe;border-left:3px solid #2563eb;border-radius:4px;">
             <strong style="color:#1e40af;">☁️ Supabase Cloud:</strong><br>
             <span style="font-size:14px;color:#1e3a8a;">${cloudInfo}</span>
           </div>
-          
+
           <div style="padding:12px;background:#fef3c7;border:1px solid #fbbf24;border-radius:6px;font-size:13px;line-height:1.5;color:#78350f;">
             <strong style="display:block;margin-bottom:6px;color:#92400e;">💡 TIP: If counts don't match:</strong>
             1. Click "↓ Sync from Cloud" to download<br>
             2. Click "↑ Upload to Cloud" to upload<br>
-            3. Make sure you're signed in
+            3. Confirm the email and User ID above are the account you intended to use
           </div>
         </div>
         <div style="margin-top:16px;text-align:center;">
@@ -4829,16 +4856,17 @@ async function showStorageDiagnostics(){
       </div>
     `;
     document.body.appendChild(overlay);
-    
+
     overlay.onclick = (e) => {
       if (e.target === overlay) overlay.remove();
     };
-    
+
   }catch(e){
     console.error('Diagnostics failed:', e);
     showMessage('❌ Diagnostics failed: ' + e.message);
   }
 }
+
 async function cleanupOtherUsersDeals(){
   try{
     const user = await getCloudUser();
