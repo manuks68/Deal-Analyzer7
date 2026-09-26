@@ -18,7 +18,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
 <meta content="AnuksDealMobile Calc" name="apple-mobile-web-app-title"/>
-<meta content="2026.09.25.glossary-alpha-scroll-v29" name="app-version"/>
+<meta content="2026.09.25.glossary-alpha-click-fix-v34" name="app-version"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Native mobile keyboard prediction enabled for Deal Name, Submarket, and Broker Name. Custom suggestion UI and keystroke capitalization removed to avoid interfering with iPhone keyboard suggestions. -->
 <style id="anuks-consolidated-styles-v1">
@@ -663,6 +663,224 @@ body.full-actual-mode .quick-disabled-card,body.full-actual-mode .quick-disabled
 </style>
 
 
+
+<style id="cross-device-scroll-v30">
+.flow-row,
+.refi-flow-row,
+.glossary-alpha-index{
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  scrollbar-width:thin;
+}
+.flow-row::-webkit-scrollbar,
+.refi-flow-row::-webkit-scrollbar,
+.glossary-alpha-index::-webkit-scrollbar{
+  height:7px;
+}
+.flow-row::-webkit-scrollbar-thumb,
+.refi-flow-row::-webkit-scrollbar-thumb,
+.glossary-alpha-index::-webkit-scrollbar-thumb{
+  background:rgba(96,165,250,.55);
+  border-radius:999px;
+}
+.flow-row::-webkit-scrollbar-track,
+.refi-flow-row::-webkit-scrollbar-track,
+.glossary-alpha-index::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.06);
+  border-radius:999px;
+}
+@media (hover:hover) and (pointer:fine){
+  .flow-row,
+  .refi-flow-row,
+  .glossary-alpha-index{cursor:grab;}
+  .flow-row.hscroll-dragging,
+  .refi-flow-row.hscroll-dragging,
+  .glossary-alpha-index.hscroll-dragging{
+    cursor:grabbing;
+    user-select:none;
+  }
+}
+</style>
+
+
+<style id="scrollbar-spacing-fix-v31">
+/* Reserve visible space for desktop horizontal scrollbars */
+.flow-row,
+.refi-flow-row,
+.glossary-alpha-index{
+  scrollbar-gutter: stable;
+}
+
+/* Glossary A–Z row */
+.glossary-alpha-index{
+  padding-top: 2px !important;
+  padding-bottom: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Deal Flow + Refinance Flow rows */
+.flow-row,
+.refi-flow-row{
+  padding-bottom: 14px !important;
+  margin-bottom: 6px !important;
+  align-items: stretch !important;
+}
+
+/* Keep cards and letter buttons above the scrollbar track visually */
+.glossary-alpha-btn,
+.flow-step,
+.refi-flow-step{
+  position: relative;
+  z-index: 1;
+}
+
+/* Slightly slimmer bars so they feel less intrusive */
+.flow-row::-webkit-scrollbar,
+.refi-flow-row::-webkit-scrollbar,
+.glossary-alpha-index::-webkit-scrollbar{
+  height: 5px !important;
+}
+
+/* Firefox fallback track spacing feel */
+@supports (scrollbar-width: thin){
+  .flow-row,
+  .refi-flow-row,
+  .glossary-alpha-index{
+    scrollbar-width: thin;
+  }
+}
+</style>
+
+
+<style id="scrollbar-hover-v32">
+/* Permanent desktop scrollbar cue + brighter hover state */
+.flow-row,
+.refi-flow-row,
+.glossary-alpha-index{
+  scrollbar-color: rgba(96,165,250,.72) rgba(255,255,255,.08);
+}
+
+/* Default: always visible, slim, readable */
+.flow-row::-webkit-scrollbar,
+.refi-flow-row::-webkit-scrollbar,
+.glossary-alpha-index::-webkit-scrollbar{
+  height:6px !important;
+}
+
+.flow-row::-webkit-scrollbar-thumb,
+.refi-flow-row::-webkit-scrollbar-thumb,
+.glossary-alpha-index::-webkit-scrollbar-thumb{
+  background:rgba(96,165,250,.72) !important;
+  border-radius:999px !important;
+}
+
+.flow-row::-webkit-scrollbar-track,
+.refi-flow-row::-webkit-scrollbar-track,
+.glossary-alpha-index::-webkit-scrollbar-track{
+  background:rgba(255,255,255,.08) !important;
+  border-radius:999px !important;
+}
+
+/* Hover: make the scroll cue more obvious on Mac/desktop */
+@media (hover:hover) and (pointer:fine){
+  .flow-row:hover,
+  .refi-flow-row:hover,
+  .glossary-alpha-index:hover{
+    scrollbar-color: rgba(59,130,246,1) rgba(255,255,255,.12);
+  }
+
+  .flow-row:hover::-webkit-scrollbar,
+  .refi-flow-row:hover::-webkit-scrollbar,
+  .glossary-alpha-index:hover::-webkit-scrollbar{
+    height:8px !important;
+  }
+
+  .flow-row:hover::-webkit-scrollbar-thumb,
+  .refi-flow-row:hover::-webkit-scrollbar-thumb,
+  .glossary-alpha-index:hover::-webkit-scrollbar-thumb{
+    background:rgba(59,130,246,1) !important;
+  }
+
+  .flow-row:hover::-webkit-scrollbar-track,
+  .refi-flow-row:hover::-webkit-scrollbar-track,
+  .glossary-alpha-index:hover::-webkit-scrollbar-track{
+    background:rgba(255,255,255,.12) !important;
+  }
+}
+</style>
+
+
+<style id="custom-scrollbar-v33">
+/* Desktop/Mac: hide the OS overlay bar and use our own always-visible control. */
+@media (hover:hover) and (pointer:fine){
+  .flow-row,
+  .refi-flow-row,
+  .glossary-alpha-index{
+    scrollbar-width:none !important;
+    padding-bottom:8px !important;
+  }
+
+  .flow-row::-webkit-scrollbar,
+  .refi-flow-row::-webkit-scrollbar,
+  .glossary-alpha-index::-webkit-scrollbar{
+    display:none !important;
+    width:0 !important;
+    height:0 !important;
+  }
+
+  .anuks-hscroll-control{
+    position:relative;
+    height:12px;
+    margin:4px 0 8px;
+    border-radius:999px;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(96,165,250,.22);
+    overflow:hidden;
+    cursor:pointer;
+    transition:background .15s ease,border-color .15s ease;
+  }
+
+  .anuks-hscroll-control:hover{
+    background:rgba(255,255,255,.16);
+    border-color:rgba(59,130,246,.65);
+  }
+
+  .anuks-hscroll-thumb{
+    position:absolute;
+    top:2px;
+    left:0;
+    height:6px;
+    min-width:34px;
+    border-radius:999px;
+    background:rgba(96,165,250,.78);
+    box-shadow:0 0 0 1px rgba(147,197,253,.18);
+    cursor:grab;
+    transition:height .15s ease,top .15s ease,background .15s ease;
+  }
+
+  .anuks-hscroll-control:hover .anuks-hscroll-thumb{
+    top:1px;
+    height:8px;
+    background:#3b82f6;
+  }
+
+  .anuks-hscroll-thumb.dragging{
+    cursor:grabbing;
+    background:#2563eb;
+  }
+
+  .anuks-hscroll-control.disabled{
+    opacity:.28;
+    pointer-events:none;
+  }
+}
+
+/* iPhone/touch: retain native swipe behavior and native scrollbar handling. */
+@media (hover:none), (pointer:coarse){
+  .anuks-hscroll-control{display:none !important;}
+}
+</style>
+
 </head>
 <body>
 <div class="phone">
@@ -1126,34 +1344,34 @@ body.full-actual-mode .quick-disabled-card,body.full-actual-mode .quick-disabled
 </div>
 <div class="glossary-only" id="glossarySection"><div class="card"><div class="section-title">Glossary - Term Definitions</div><div class="glossary-search-wrapper" id="glossarySearchWrapper"><input class="glossary-search" id="glossarySearch" oninput="filterGlossary()" placeholder="Search glossary terms..." type="search"/><button aria-label="Clear search" class="glossary-clear-btn" id="glossaryClearBtn" onclick="clearGlossarySearch()">×</button></div>
 <div class="glossary-alpha-index" id="glossaryAlphaIndex" aria-label="Glossary alphabetical index">
-  <button type="button" class="glossary-alpha-btn active" data-letter="ALL" onclick="filterGlossaryByLetter('ALL',this)">ALL</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="#" onclick="filterGlossaryByLetter('#',this)">#</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="A" onclick="filterGlossaryByLetter('A',this)">A</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="B" onclick="filterGlossaryByLetter('B',this)">B</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="C" onclick="filterGlossaryByLetter('C',this)">C</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="D" onclick="filterGlossaryByLetter('D',this)">D</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="E" onclick="filterGlossaryByLetter('E',this)">E</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="F" onclick="filterGlossaryByLetter('F',this)">F</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="G" onclick="filterGlossaryByLetter('G',this)">G</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="H" onclick="filterGlossaryByLetter('H',this)">H</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="I" onclick="filterGlossaryByLetter('I',this)">I</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="J" onclick="filterGlossaryByLetter('J',this)">J</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="K" onclick="filterGlossaryByLetter('K',this)">K</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="L" onclick="filterGlossaryByLetter('L',this)">L</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="M" onclick="filterGlossaryByLetter('M',this)">M</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="N" onclick="filterGlossaryByLetter('N',this)">N</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="O" onclick="filterGlossaryByLetter('O',this)">O</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="P" onclick="filterGlossaryByLetter('P',this)">P</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="Q" onclick="filterGlossaryByLetter('Q',this)">Q</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="R" onclick="filterGlossaryByLetter('R',this)">R</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="S" onclick="filterGlossaryByLetter('S',this)">S</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="T" onclick="filterGlossaryByLetter('T',this)">T</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="U" onclick="filterGlossaryByLetter('U',this)">U</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="V" onclick="filterGlossaryByLetter('V',this)">V</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="W" onclick="filterGlossaryByLetter('W',this)">W</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="X" onclick="filterGlossaryByLetter('X',this)">X</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="Y" onclick="filterGlossaryByLetter('Y',this)">Y</button>
-  <button type="button" class="glossary-alpha-btn" data-letter="Z" onclick="filterGlossaryByLetter('Z',this)">Z</button>
+  <button type="button" class="glossary-alpha-btn active" data-letter="ALL">ALL</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="#">#</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="A">A</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="B">B</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="C">C</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="D">D</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="E">E</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="F">F</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="G">G</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="H">H</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="I">I</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="J">J</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="K">K</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="L">L</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="M">M</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="N">N</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="O">O</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="P">P</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="Q">Q</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="R">R</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="S">S</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="T">T</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="U">U</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="V">V</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="W">W</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="X">X</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="Y">Y</button>
+  <button type="button" class="glossary-alpha-btn" data-letter="Z">Z</button>
 </div>
 <div class="glossary-list" id="glossaryList"><details class="glossary-item" data-term="1031 exchange"><summary><span class="glossary-term">1031 Exchange</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">IRS tax-deferred exchange allowing investors to defer capital gains by reinvesting proceeds into like-kind property</div></details><details class="glossary-item" data-term="actual debt service coverage ratio actual dscr"><summary><span class="glossary-term">Actual Debt Service Coverage Ratio (Actual DSCR)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The primary lender safety metric showing how many times the property's Net Operating Income covers the annual loan payments. Lenders typically require a minimum DSCR of 1.20 to 1.30, meaning NOI must be at least 20-30% higher than debt service.</div><div class="glossary-hint">Formula: Actual DSCR = NOI ÷ Annual Debt Service. Example: $150,000 NOI ÷ $120,000 annual debt = 1.25 DSCR. Below 1.00 means the property cannot cover its debt payments from operations.</div><div class="glossary-hint">Formula: Actual NOI ÷ Annual Debt Service.</div></details><details class="glossary-item" data-term="actual max offer"><summary><span class="glossary-term">Actual Max Offer</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The maximum purchase price supported by the property’s actual NOI at the selected Target Cap Rate.</div><div class="glossary-hint">Formula: Actual NOI ÷ Target Cap Rate.</div></details><details class="glossary-item" data-term="actual numbers"><summary><span class="glossary-term">Actual Numbers</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Financial data derived from actual property records, T12s, rent rolls, or operating statements — not projected or estimated</div></details><details class="glossary-item" data-term="add on value"><summary><span class="glossary-term">Add on Value</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Additional value that can be created through renovations, operational improvements, or repositioning the property</div></details><details class="glossary-item" data-term="after tax cash on cash after tax coc"><summary><span class="glossary-term">After-Tax Cash-on-Cash (After-Tax CoC)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Cash-on-cash return after applying the estimated tax impact to cash flow.</div><div class="glossary-hint">Formula: After-Tax Cash Flow ÷ Total Cash Invested.</div></details><details class="glossary-item" data-term="amortization (years)"><summary><span class="glossary-term" style="white-space:nowrap;">Amortization (Years)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Loan amortization period in years — typically 30 years for multifamily properties</div></details><details class="glossary-item" data-term="annual debt service ads"><summary><span class="glossary-term">Annual Debt Service (ADS)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The total loan payments due in one year, including principal and interest if the loan is amortizing.</div><div class="glossary-hint">Formula: ADS = Monthly Loan Payment × 12. This is subtracted from NOI to calculate cash flow before tax.</div><div class="glossary-hint">Formula: Monthly Payment × 12.</div></details><details class="glossary-item" data-term="automatic cloud sync"><summary><span class="glossary-term">Automatic Cloud Sync</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The preferred modern workflow. After you sign in, the app automatically tries to pull cloud deals into Saved Deals. When you press Save Deal, it saves locally and sends the deal to Supabase.</div><div class="glossary-hint">Beginner rule: most days you only use Load and Save Deal. Upload/Download Cloud and Export/Import are backup, transfer, and recovery tools.</div></details><details class="glossary-item" data-term="average monthly rent"><summary><span class="glossary-term">Average Monthly Rent</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Current average rent per unit per month</div></details><details class="glossary-item" data-term="break-even rent"><summary><span class="glossary-term">Break-Even Rent</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Estimated minimum average rent per occupied unit needed to cover the current annual expense load</div><div class="glossary-hint">Displayed as an average amount per unit per month.</div></details><details class="glossary-item" data-term="bridge loan"><summary><span class="glossary-term">Bridge Loan</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Short-term financing used during acquisition and renovation period before refinancing into permanent debt — typically 1-3 years with higher interest rates</div></details><details class="glossary-item" data-term="broker name"><summary><span class="glossary-term">Broker Name</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Optional: name of the broker or contact</div></details><details class="glossary-item" data-term="calculated expense ratio"><summary><span class="glossary-term">Calculated Expense Ratio</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The actual operating expenses as a percentage of Effective Gross Income, automatically calculated from the individual line-item expense inputs you enter (taxes, insurance, utilities, repairs, management, etc.). This shows what the property's real expense burden is based on your detailed inputs.</div><div class="glossary-hint">Formula: Calculated Expense Ratio = Total Operating Expenses ÷ Effective Gross Income. Example: $200,000 OpEx ÷ $400,000 EGI = 50% expense ratio. Displayed in the Operating Expenses section when actual expense data is entered.</div><div class="glossary-hint">Calculated automatically from the actual line-item expense inputs.</div></details><details class="glossary-item" data-term="capex reserves"><summary><span class="glossary-term">CapEx Reserves</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Capital expenditure reserves set aside for major repairs and replacements such as roofs, HVAC systems, parking lots, and building systems — typically $250-$350 per unit annually</div></details><details class="glossary-item" data-term="cap rate capitalization rate"><summary><span class="glossary-term">Capitalization Rate (Cap Rate)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A valuation yield that compares Net Operating Income to the purchase price or value. It shows the property’s unlevered return before loan payments.</div><div class="glossary-hint">Formula: Cap Rate = NOI ÷ Purchase Price. Example: $122,400 NOI ÷ $2,000,000 price = 6.12%.</div></details><details class="glossary-item" data-term="cash flow after tax cfat"><summary><span class="glossary-term">Cash Flow After Tax (CFAT)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Estimated cash flow remaining after the modeled tax impact.</div><div class="glossary-hint">Formula: Before-Tax Cash Flow − Estimated Tax Impact.</div></details><details class="glossary-item" data-term="cash flow before tax cfbt"><summary><span class="glossary-term">Cash Flow Before Tax (CFBT)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The money left from property operations after paying annual debt service, before estimating income taxes.</div><div class="glossary-hint">Formula: CFBT = NOI − Annual Debt Service.</div><div class="glossary-hint">Formula: NOI − Annual Debt Service.</div></details><details class="glossary-item" data-term="cash-on-cash return coc"><summary><span class="glossary-term">Cash-on-Cash Return (CoC)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The annual before-tax return compared to the actual cash invested. It helps you judge whether the cash you put into the deal is producing enough cash flow.</div><div class="glossary-hint">Formula: CoC = Cash Flow Before Tax ÷ Total Cash Invested.</div><div class="glossary-hint">Formula: Before-Tax Cash Flow ÷ Total Cash Invested.</div></details><details class="glossary-item" data-term="cash to close"><summary><span class="glossary-term">Cash to Close</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The modeled cash required at acquisition before adding hold-period interest.</div><div class="glossary-hint">Formula: Down Payment + Rehab Cost + Other Costs.</div></details><details class="glossary-item" data-term="class a/b/c/d"><summary><span class="glossary-term">Class A/B/C/D</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Property quality and tenant demographic classifications — Class A represents luxury/newest properties, while Class D represents lowest quality and income demographics</div></details><details class="glossary-item" data-term="closing costs"><summary><span class="glossary-term">Closing Costs</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Transaction expenses including title insurance, legal fees, recording fees, transfer taxes, and lender fees — typically 2-4% of purchase price</div></details><details class="glossary-item" data-term="concessions"><summary><span class="glossary-term">Concessions</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Tenant incentives such as free rent periods, reduced deposits, or waived fees used to attract renters</div></details><details class="glossary-item" data-term="confidence level"><summary><span class="glossary-term">Confidence Level</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">How trustworthy the result is based on assumptions versus actual inputs<div class="glossary-hint">Logic used: LOW when Quick mode is active. MEDIUM when Full mode is selected but one or more key actual inputs are still missing, such as taxes, insurance, or expense ratio. HIGH when Full mode is selected and those key actual inputs are present.</div></div></details><details class="glossary-item" data-term="conservative underwriting results realistic scenario"><summary><span class="glossary-term">Conservative Underwriting Results (Realistic Scenario)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The calculator’s reality-check section that applies conservative expense assumptions to test whether the deal still works.</div><div class="glossary-hint">Use this to avoid relying only on broker numbers or optimistic assumptions.</div></details><details class="glossary-item" data-term="current value check"><summary><span class="glossary-term">Current Value Check</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A quick value estimate using current NOI and your cap-rate assumption</div><div class="glossary-hint">Example: Current NOI ÷ Exit Cap</div><div class="glossary-hint">Formula: Current NOI ÷ Exit Cap Rate.</div></details><details class="glossary-item" data-term="deal name"><summary><span class="glossary-term">Deal Name</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Enter a name to identify this deal</div></details><details class="glossary-item" data-term="deal score"><summary><span class="glossary-term">Deal Score</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">How strong the deal looks based on your calculator’s screening logic<div class="glossary-hint">Logic used: the dashboard starts at 50, then adjusts from the deal inputs. Cap rate at or above 7% adds 15 points, 6% to under 7% adds 10, below 6% subtracts 10. A refinance result at or above zero adds 20 points, a small shortfall adds 5, and a larger shortfall subtracts 15. Rent upside adds 10. Workforce-fit adds 10. Cash invested above $700,000 subtracts 10. The final score is capped between 0 and 100.</div></div></details><details class="glossary-item" data-term="debt service coverage ratio dscr"><summary><span class="glossary-term">Debt Service Coverage Ratio (DSCR)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A lender-style safety ratio showing whether NOI is enough to cover the annual loan payments. Higher is safer.</div><div class="glossary-hint">Formula: DSCR = NOI ÷ Annual Debt Service. 1.25 means NOI is 125% of debt payments; below 1.00 means the property does not cover the debt.</div></details><details class="glossary-item" data-term="debt yield"><summary><span class="glossary-term">Debt Yield</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">NOI divided by total loan amount — lender's risk metric independent of interest rates, typically requiring minimum 10-12%</div></details><details class="glossary-item" data-term="depreciation"><summary><span class="glossary-term">Depreciation</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">IRS tax deduction allowing investors to write off building value over 27.5 years for residential properties — major tax benefit of real estate investing</div></details><details class="glossary-item" data-term="disposition"><summary><span class="glossary-term">Disposition</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Sale or exit of the property at the end of the investment hold period</div></details><details class="glossary-item" data-term="down payment cash needed"><summary><span class="glossary-term">Down Payment / Cash Needed</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Initial buyer cash required for the equity portion of the purchase. In the Debt Service &amp; Return section, this is purchase price minus loan amount; Cash to Close shows the wider cash need including rehab and other costs.</div><div class="glossary-hint">Formula: Purchase Price − Acquisition Loan Amount.</div></details><details class="glossary-item" data-term="download cloud to app get from cloud"><summary><span class="glossary-term">Download Cloud to App</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Manual recovery button that pulls saved deals from Supabase into the app’s Saved Deals list on this device.</div><div class="glossary-hint">Beginner rule: think CLOUD → LOCAL. Use it on a new device, after reinstalling the Home Screen app, or if you know Supabase has deals but they are not showing in the app.</div></details><details class="glossary-item" data-term="due diligence"><summary><span class="glossary-term">Due Diligence</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Investigation and verification period between contract signing and closing to inspect property, review financials, and confirm deal assumptions</div></details><details class="glossary-item" data-term="earnest money"><summary><span class="glossary-term">Earnest Money</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Good faith deposit submitted with offer to demonstrate buyer's serious intent — typically 1-3% of purchase price</div></details><details class="glossary-item" data-term="economic occupancy"><summary><span class="glossary-term">Economic Occupancy</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Revenue-based occupancy percentage accounting for concessions, unpaid rent, and rent loss — more accurate than physical occupancy</div></details><details class="glossary-item" data-term="effective income effective gross income egi"><summary><span class="glossary-term">Effective Gross Income (EGI)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The income the property is expected to actually collect after applying occupancy/vacancy assumptions and adding other income. EGI is the income number that feeds expenses and NOI.</div><div class="glossary-hint">Formula used in the app: EGI = (Gross Scheduled Rent × Occupancy) + Other Income, depending on the active income mode.</div><div class="glossary-hint">Formula: Gross Scheduled Rent × Occupancy + Annual Other Income.</div></details><details class="glossary-item" data-term="equity multiple"><summary><span class="glossary-term">Equity Multiple</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Total cash returned divided by total cash invested</div></details><details class="glossary-item" data-term="estimated tax impact"><summary><span class="glossary-term">Estimated Tax Impact</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">An estimate of the tax effect applied to positive modeled cash flow using the selected investor tax rate.</div><div class="glossary-hint">Formula: Positive Cash Flow × Estimated Investor Tax Rate.</div></details><details class="glossary-item" data-term="exit cap rate"><summary><span class="glossary-term">Exit Cap Rate</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Cap rate used to calculate exit property value</div></details><details class="glossary-item" data-term="expense adjusted"><summary><span class="glossary-term">Expense Adjusted</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The expense number after applying your quick-analysis expense adjustment setting</div></details><details class="glossary-item" data-term="expense ratio"><summary><span class="glossary-term">Expense Ratio</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Operating expenses as a percentage of gross income</div><div class="glossary-hint">Formula: Operating Expenses ÷ Effective Gross Income.</div></details><details class="glossary-item" data-term="export sync file backup to file"><summary><span class="glossary-term">Export Sync File</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Creates a backup file of your Saved Deals. The file is a JSON sync file, which is a data file the app can import later. It is not meant to be edited like Excel.</div><div class="glossary-hint">Beginner rule: Export is like making a backup copy. It does not change the cloud database. On a laptop it usually goes to Downloads; on iPhone it may ask where to save in Files/iCloud.</div></details><details class="glossary-item" data-term="full (actual data) mode"><summary><span class="glossary-term">Full (Actual Data) Mode</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Underwriting mode that relies on the actual values you enter and is intended for deeper analysis once you have real documents</div></details><details class="glossary-item" data-term="gp/lp"><summary><span class="glossary-term">GP/LP</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">General Partner (active sponsor managing the deal) and Limited Partner (passive investor providing capital) roles in syndication structures</div></details><details class="glossary-item" data-term="gross annual rent"><summary><span class="glossary-term">Gross Annual Rent</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Your raw rent check</div><div class="glossary-hint">Example: Units × Average Monthly Rent × 12</div></details><details class="glossary-item" data-term="gross scheduled rent gsr"><summary><span class="glossary-term">Gross Scheduled Rent (GSR)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Total potential annual rent if every unit is rented for the full year at the average monthly rent. This is the starting rental-income number before vacancy, credit loss, or other income adjustments.</div><div class="glossary-hint">Formula: Units × Average Monthly Rent × 12. Example: 24 units × $1,000 × 12 = $288,000.</div></details><details class="glossary-item" data-term="hard costs"><summary><span class="glossary-term">Hard Costs</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Direct physical construction and renovation expenses including labor, materials, and equipment</div></details><details class="glossary-item" data-term="hold months"><summary><span class="glossary-term">Hold Months</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Length of bridge loan period in months before refinancing</div></details><details class="glossary-item" data-term="import input sync file restore from file"><summary><span class="glossary-term">Import Sync File</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Brings deals from a previously exported JSON sync file back into the app. Use this if you saved a backup file and need to restore it, or if you transferred a backup from another device.</div><div class="glossary-hint">Beginner rule: Import brings a backup file into the browser/app. If the imported deals are not in Supabase yet, use Upload Local to Cloud or Save Deal to push them to cloud.</div></details><details class="glossary-item" data-term="insurance per unit"><summary><span class="glossary-term">Insurance Per Unit</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Annual property insurance cost per unit. The Houston default is $400 per unit per year, used in Quick Assumptions mode when actual insurance cost isn't entered.</div><div class="glossary-hint">Example: For a 30-unit property, default insurance = 30 units × $400 = $12,000 annually. Actual insurance costs vary by location, age, construction type, and coverage limits.</div></details><details class="glossary-item" data-term="interest rate"><summary><span class="glossary-term">Interest Rate</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Annual interest rate assumption for acquisition / bridge financing during the hold period</div></details><details class="glossary-item" data-term="irr (internal rate of return)"><summary><span class="glossary-term">IRR (Internal Rate of Return)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Time-weighted return accounting for cash flows and timing</div></details><details class="glossary-item" data-term="letter of intent (loi)"><summary><span class="glossary-term">Letter of Intent (LOI)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Non-binding document expressing buyer's preliminary interest and proposed terms before formal contract execution</div></details><details class="glossary-item" data-term="load saved deal work on a deal"><summary><span class="glossary-term">Load</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Loads one selected saved deal back into the calculator screen. Use this when you already saved a deal and want to bring its numbers back into the input boxes so you can review it, change assumptions, or continue underwriting it.</div><div class="glossary-hint">Beginner rule: Load is like opening a saved file. It does not create a new save and does not send anything to Supabase by itself. After you make changes, press Save Deal.</div></details><details class="glossary-item" data-term="loan amount"><summary><span class="glossary-term">Loan Amount</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The acquisition loan amount calculated from purchase price and the selected loan-to-value ratio.</div><div class="glossary-hint">Formula: Purchase Price × LTV.</div></details><details class="glossary-item" data-term="loss to lease"><summary><span class="glossary-term">Loss to Lease</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Revenue gap between actual collected rent and potential market-rate rent for currently occupied units — indicates rent upside opportunity</div></details><details class="glossary-item" data-term="ltv (loan-to-value)"><summary><span class="glossary-term">LTV (Loan-to-Value)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Loan-to-value ratio for acquisition financing — the percentage of the purchase price that will be financed</div><div class="glossary-hint">Formula: Loan Amount ÷ Purchase Price.</div></details><details class="glossary-item" data-term="management fee mgmt fee"><summary><span class="glossary-term">Management Fee (Mgmt Fee)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The modeled property-management expense based on gross scheduled rent and the management fee percentage.</div><div class="glossary-hint">Formula: Gross Scheduled Rent × Management Fee %.</div></details><details class="glossary-item" data-term="market rent"><summary><span class="glossary-term">Market Rent</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Market rate rent per unit per month</div></details><details class="glossary-item" data-term="market rent factor"><summary><span class="glossary-term">Market Rent Factor</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A multiplier used in Quick Assumptions mode to estimate market rent as a percentage of current average rent. The default 1.10× factor means market rent is assumed to be 110% of current rent (10% higher).</div><div class="glossary-hint">Example: If current average rent is $1,000 and the factor is 1.10×, estimated market rent = $1,000 × 1.10 = $1,100 per unit. This helps quickly screen deals when market comps aren't available yet.</div></details><details class="glossary-item" data-term="max offer"><summary><span class="glossary-term">Max Offer</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A quick-screen estimate of the highest price the deal could support under the current assumptions</div><div class="glossary-hint">Formula used by the dashboard: Stress-Test NOI ÷ Target Cap Rate.</div></details><details class="glossary-item" data-term="monthly payment"><summary><span class="glossary-term">Monthly Payment</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Estimated monthly loan payment based on loan amount, permanent interest rate, and amortization period.</div><div class="glossary-hint">Represents the estimated amortized monthly debt service.</div></details><details class="glossary-item" data-term="net operating income noi"><summary><span class="glossary-term">Net Operating Income (NOI)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The property’s operating profit before debt payments, income taxes, depreciation, and owner-specific financing. NOI is one of the most important numbers in multifamily underwriting.</div><div class="glossary-hint">Formula: NOI = Effective Gross Income (EGI) − Operating Expenses (OpEx).</div></details><details class="glossary-item" data-term="occupancy"><summary><span class="glossary-term">Occupancy</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Current occupancy percentage</div></details><details class="glossary-item" data-term="offering memorandum (om)"><summary><span class="glossary-term">Offering Memorandum (OM)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Marketing package prepared by seller's broker containing property details, financials, photos, and investment highlights</div></details><details class="glossary-item" data-term="operating agreement"><summary><span class="glossary-term">Operating Agreement</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Legal document defining LLC ownership structure, management responsibilities, profit distributions, and investor rights</div></details><details class="glossary-item" data-term="operating expenses opex"><summary><span class="glossary-term">Operating Expenses (OpEx)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The recurring costs needed to operate the property, excluding loan payments and income taxes. Examples include management, repairs, utilities, insurance, property taxes, admin, and reserves.</div><div class="glossary-hint">OpEx is subtracted from EGI to calculate NOI. Debt service is not an operating expense.</div><div class="glossary-hint">Total Operating Expenses includes all operating expenses, including management fees.</div></details><details class="glossary-item" data-term="operating reserves"><summary><span class="glossary-term">Operating Reserves</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Cash reserves held to cover operating expenses, vacancy losses, and unexpected costs — typically 3-6 months of operating expenses</div></details><details class="glossary-item" data-term="other costs"><summary><span class="glossary-term">Other Costs</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Additional closing costs, fees, or reserves</div></details><details class="glossary-item" data-term="other income oi"><summary><span class="glossary-term">Other Income (OI)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Income from the property other than base rent, such as laundry, parking, application fees, pet fees, RUBS utility reimbursements, storage, or other recurring property income.</div><div class="glossary-hint">In Quick Mode, this can be simplified as dollars per unit per month. App formula: Units × Other Income per Unit per Month × 12.</div></details><details class="glossary-item" data-term="over / under asking"><summary><span class="glossary-term">Over / Under Asking</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">How far the asking price is above or below the quick current value check</div><div class="glossary-hint">Positive means overpriced; negative means below the value check</div><div class="glossary-hint">Compares the asking price with the Current Value Check.</div></details><details class="glossary-item" data-term="over under max offer"><summary><span class="glossary-term">Over / Under Max Offer</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Shows how the purchase price compares with the calculated Actual Max Offer.</div><div class="glossary-hint">Formula: Purchase Price − Actual Max Offer; the display indicates whether price is over or under the supported offer.</div></details><details class="glossary-item" data-term="permanent dscr"><summary><span class="glossary-term">Permanent DSCR</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Debt service coverage ratio for permanent loan — measures cash flow available to cover debt payments, typically 1.20–1.30</div></details><details class="glossary-item" data-term="permanent loan"><summary><span class="glossary-term">Permanent Loan</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Long-term financing replacing bridge loan after property stabilization — typically 5-10 year terms with 25-30 year amortization and lower interest rates</div></details><details class="glossary-item" data-term="permanent ltv"><summary><span class="glossary-term">Permanent LTV</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Loan-to-value ratio for permanent loan based on stabilized property value</div></details><details class="glossary-item" data-term="permanent rate"><summary><span class="glossary-term">Permanent Rate</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Interest rate for permanent financing after the hold period</div></details><details class="glossary-item" data-term="ppm (private placement memorandum)"><summary><span class="glossary-term">PPM (Private Placement Memorandum)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Legal offering document for syndication detailing investment terms, risk factors, sponsor background, and property details — required for SEC compliance</div></details><details class="glossary-item" data-term="preferred return (pref)"><summary><span class="glossary-term">Preferred Return (Pref)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Priority minimum return paid to limited partner investors before sponsor/GP receives profit share — typically 6-8% annually</div></details><details class="glossary-item" data-term="price adjusted"><summary><span class="glossary-term">Price Adjusted</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The purchase price after applying your quick-analysis price adjustment setting</div></details><details class="glossary-item" data-term="pro forma"><summary><span class="glossary-term">Pro Forma</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Forward-looking financial projection showing expected income, expenses, and returns after planned improvements or stabilization</div></details><details class="glossary-item" data-term="projected numbers"><summary><span class="glossary-term">Projected Numbers</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Future financial estimates based on assumptions about rent growth, expense improvements, or market conditions — not current actuals</div></details><details class="glossary-item" data-term="property tax rate"><summary><span class="glossary-term">Property Tax Rate</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Annual property tax as a percentage of purchase price or assessed value. The Houston default is 2.5% of purchase price, used in Quick Assumptions mode when actual property taxes aren't entered.</div><div class="glossary-hint">Example: For a $2,000,000 purchase price, default property taxes = $2,000,000 × 2.5% = $50,000 annually. Texas has relatively high property taxes compared to other states, with Houston-area rates typically ranging from 2.0% to 3.0% depending on the specific county and municipal tax districts.</div></details><details class="glossary-item" data-term="purchase price"><summary><span class="glossary-term">Purchase Price</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Total acquisition price of the property</div></details><details class="glossary-item" data-term="quick (assumptions) mode"><summary><span class="glossary-term">Quick (Assumptions) Mode</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Fast screening mode that uses built-in Houston defaults for missing items like market rent, expense ratio, taxes, and insurance</div></details><details class="glossary-item" data-term="refi result"><summary><span class="glossary-term">Refi Result</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The modeled amount remaining after the permanent refinance loan pays off the current loan balance.</div><div class="glossary-hint">Formula: Permanent Loan − Current Payoff.</div></details><details class="glossary-item" data-term="rehab cost"><summary><span class="glossary-term">Rehab Cost</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Total renovation and improvement costs</div></details><details class="glossary-item" data-term="rent adjusted"><summary><span class="glossary-term">Rent Adjusted</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The rent figure after applying your quick-analysis rent adjustment setting</div></details><details class="glossary-item" data-term="rent comps"><summary><span class="glossary-term">Rent Comps</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Comparable rental rates from similar properties in the same submarket used to validate market rent assumptions</div></details><details class="glossary-item" data-term="rent roll"><summary><span class="glossary-term">Rent Roll</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Detailed report listing all tenants, unit numbers, lease terms, current rents, deposits, and lease expiration dates</div></details><details class="glossary-item" data-term="replacement reserves"><summary><span class="glossary-term">Replacement Reserves</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Funds set aside for replacing short-lived items like appliances, flooring, and fixtures — distinct from CapEx reserves for major building systems</div></details><details class="glossary-item" data-term="risk flags"><summary><span class="glossary-term">Risk Flags</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Short warnings that explain the main issues making the deal weaker under the current analysis</div></details><details class="glossary-item" data-term="save deal save to browser cloud"><summary><span class="glossary-term">Save Deal</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Saves the deal you are currently working on. The app first saves it inside the browser so you do not lose your work, and when you are signed in it also syncs the same deal to the Supabase cloud database.</div><div class="glossary-hint">Beginner rule: Save Deal is your normal everyday save button. Use it after entering a new deal, after changing numbers, or after changing the deal status.</div></details><details class="glossary-item" data-term="soft costs"><summary><span class="glossary-term">Soft Costs</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Indirect project expenses including permits, architectural fees, legal costs, insurance, and financing fees</div></details><details class="glossary-item" data-term="stabilization"><summary><span class="glossary-term">Stabilization</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Point when property reaches target occupancy and normalized operating performance after acquisition and initial improvements</div></details><details class="glossary-item" data-term="stabilized occ (occupancy)"><summary><span class="glossary-term">Stabilized Occ (Occupancy)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Target occupancy percentage after stabilization and renovations are complete</div></details><details class="glossary-item" data-term="stabilized value"><summary><span class="glossary-term">Stabilized Value</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Future value estimate after improvements</div><div class="glossary-hint">Example: Stabilized NOI ÷ Exit Cap</div></details><details class="glossary-item" data-term="stress test cash flow"><summary><span class="glossary-term">Stress-Test Cash Flow</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Cash flow under the conservative stress-test assumptions.</div><div class="glossary-hint">Formula: Stress-Test NOI − Annual Debt Service.</div></details><details class="glossary-item" data-term="stress test debt service coverage ratio stress test dscr"><summary><span class="glossary-term">Stress-Test Debt Service Coverage Ratio (Stress-Test DSCR)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Debt-service coverage calculated using the conservative stress-test NOI.</div><div class="glossary-hint">Formula: Stress-Test NOI ÷ Annual Debt Service.</div></details><details class="glossary-item" data-term="stress-test expense ratio"><summary><span class="glossary-term">Stress-Test Expense Ratio</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">A conservative expense assumption used to test deal strength under worst-case operating scenarios. The Houston default is 50%, meaning operating expenses are assumed to be 50% of effective gross income in the stress test.</div><div class="glossary-hint">Example: If EGI is $400,000 and stress expense ratio is 50%, stress-test operating expenses = $200,000. This conservative assumption helps identify deals that work even under challenging conditions. Used in the Conservative Underwriting section to calculate Stress-Test NOI and Stress-Test Max Offer.</div></details><details class="glossary-item" data-term="stress test max offer"><summary><span class="glossary-term">Stress-Test Max Offer</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The maximum purchase price supported by the conservative stress-test NOI at the selected Target Cap Rate.</div><div class="glossary-hint">Formula: Stress-Test NOI ÷ Target Cap Rate.</div></details><details class="glossary-item" data-term="stress test net operating income stress test noi"><summary><span class="glossary-term">Stress-Test Net Operating Income (Stress-Test NOI)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">NOI calculated using the conservative stress-test expense assumptions.</div><div class="glossary-hint">Formula: Effective Gross Income − Conservative Stress-Test Expenses.</div></details><details class="glossary-item" data-term="stress test verdict"><summary><span class="glossary-term">Stress-Test Verdict</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The GO / REVIEW / PASS result produced from the conservative stress-test pricing logic.</div><div class="glossary-hint">Uses the app’s stress-test offer comparison rules to classify the deal as GO, REVIEW, or PASS.</div></details><details class="glossary-item" data-term="submarket"><summary><span class="glossary-term">Submarket</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Location or submarket of the property</div></details><details class="glossary-item" data-term="syndication"><summary><span class="glossary-term">Syndication</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Pooling capital from multiple passive investors to acquire larger commercial properties under active sponsor management</div></details><details class="glossary-item" data-term="t12 (trailing 12 months)"><summary><span class="glossary-term">T12 (Trailing 12 Months)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Complete financial operating history for the past 12 months — the gold standard for underwriting actual performance</div></details><details class="glossary-item" data-term="t3 (trailing 3 months)"><summary><span class="glossary-term">T3 (Trailing 3 Months)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Financial performance data from the most recent 3-month period — used for trend analysis</div></details><details class="glossary-item" data-term="target capitalization rate target cap rate"><summary><span class="glossary-term">Target Capitalization Rate (Target Cap Rate)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The cap rate you use to calculate your maximum offer price for a deal. This is your required yield threshold that determines what you're willing to pay based on the property's NOI. A higher target cap rate results in a lower max offer (more conservative), while a lower cap rate results in a higher max offer (more aggressive).</div><div class="glossary-hint">Formula: Max Offer = NOI ÷ Target Cap Rate. Example: $150,000 NOI ÷ 7.5% target cap = $2,000,000 max offer. Default is typically 7.5% for conservative underwriting. Found in the Project Costs &amp; Assumptions section.</div></details><details class="glossary-item" data-term="target rent"><summary><span class="glossary-term">Target Rent</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Approximate rent level needed for the deal to support stronger returns under the current setup</div><div class="glossary-hint">Displayed as an average amount per unit per month.</div></details><details class="glossary-item" data-term="total cash invested"><summary><span class="glossary-term">Total Cash Invested</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Total modeled investor cash committed to the acquisition and hold.</div><div class="glossary-hint">Formula: Cash to Close + Hold Interest.</div></details><details class="glossary-item" data-term="total cash needed"><summary><span class="glossary-term">Total Cash Needed</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Down payment plus rehab, closing costs, and other expenses required to close</div></details><details class="glossary-item" data-term="total operating expenses opex"><summary><span class="glossary-term">Total Operating Expenses (OpEx)</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The total operating expenses used in the property analysis, including management expense.</div><div class="glossary-hint">Includes the operating-expense line items and management fee used by the calculator.</div></details><details class="glossary-item" data-term="unit mix"><summary><span class="glossary-term">Unit Mix</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Distribution breakdown of unit types (studios, 1BR, 2BR, 3BR) in a multifamily property — impacts rent potential and tenant demographics</div></details><details class="glossary-item" data-term="units"><summary><span class="glossary-term">Units</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Number of units in the property</div></details><details class="glossary-item" data-term="upload local to cloud send to cloud"><summary><span class="glossary-term">Upload Local to Cloud</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Manual recovery button that sends the deals stored in this browser/app up to Supabase. This is useful when deals exist locally but you do not see them in the cloud table.</div><div class="glossary-hint">Beginner rule: think LOCAL → CLOUD. You normally do not use this daily because Save Deal auto-syncs. Use it after importing a backup file or if automatic cloud save did not happen.</div></details><details class="glossary-item" data-term="vacancy rate"><summary><span class="glossary-term">Vacancy Rate</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Percentage of unoccupied units — inverse of occupancy rate used to estimate income loss from vacant units</div></details><details class="glossary-item" data-term="value-add"><summary><span class="glossary-term">Value-Add</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Investment strategy focused on improving underperforming properties through renovations and operational improvements to increase NOI and property value</div></details><details class="glossary-item" data-term="verdict"><summary><span class="glossary-term">Verdict</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The calculator’s overall deal call, such as Strong Deal, Review, or Pass<div class="glossary-hint">Logic used: on the Investment Dashboard, GO appears when Deal Score is 80 or higher, REVIEW appears from 50 to 79, and PASS appears at 49 or below. In the main decision box, MOVE FORWARD appears when at least two of these three checks pass: rent upside, cap rate at or above 6%, and workforce-fit. REVIEW CAREFULLY appears when only one passes. PASS appears when none pass.</div></div></details><details class="glossary-item" data-term="waterfall"><summary><span class="glossary-term">Waterfall</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Multi-tier profit distribution structure defining how investment returns split between investors and sponsors based on performance hurdles</div></details><details class="glossary-item" data-term="weak link"><summary><span class="glossary-term">Weak Link</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">The main factor currently hurting the deal most under the active analysis<div class="glossary-hint">Logic used: the calculator checks these in order. Price too high appears when adjusted purchase price is above the current value check. Cap rate low appears when cap rate is below 6%. Cash heavy appears when total cash invested is above $700,000. Refi shortfall appears when the refinance result is below zero. Limited upside appears when market rent is not above current rent. If none of those conditions are triggered, it shows No major weak link.</div></div><div class="glossary-hint">Shows the main issue identified by the deal analysis.</div></details><details class="glossary-item" data-term="whisper price"><summary><span class="glossary-term">Whisper Price</span><span class="glossary-chevron">▾</span></summary><div class="glossary-def">Unofficial price indication from seller or broker before formal asking price is set — often used to gauge market interest</div></details><div class="glossary-action-group">
 <div class="glossary-heading">Printing Instructions</div>
@@ -6259,5 +6477,274 @@ function togglePasswordVisibility(inputId, button){
   }
 }
 </script>
+
+<script id="cross-device-scroll-script-v30">
+(function(){
+  const selector='.flow-row,.refi-flow-row';
+
+  function canScrollX(el){
+    return !!el && el.scrollWidth > el.clientWidth + 2;
+  }
+
+  function enhance(el){
+    if(!el || el.dataset.crossDeviceScroll==='yes') return;
+    el.dataset.crossDeviceScroll='yes';
+
+    // Mac/desktop mouse wheel: vertical wheel becomes horizontal movement
+    // only while this row actually has room to scroll sideways.
+    el.addEventListener('wheel',function(e){
+      if(!canScrollX(el)) return;
+
+      const horizontal=Math.abs(e.deltaX)>=Math.abs(e.deltaY);
+      const delta=horizontal ? e.deltaX : e.deltaY;
+      if(!delta) return;
+
+      const max=el.scrollWidth-el.clientWidth;
+      const before=el.scrollLeft;
+      const after=Math.max(0,Math.min(max,before+delta));
+
+      if(after!==before){
+        el.scrollLeft=after;
+        e.preventDefault();
+      }
+    },{passive:false});
+
+    // Mac/desktop mouse or trackpad click-drag.
+    // Touch devices keep their normal native swipe behavior.
+    let dragging=false;
+    let moved=false;
+    let startX=0;
+    let startScroll=0;
+
+    el.addEventListener('pointerdown',function(e){
+      if(e.pointerType==='touch' || e.button!==0 || !canScrollX(el)) return;
+      dragging=true;
+      moved=false;
+      startX=e.clientX;
+      startScroll=el.scrollLeft;
+      el.classList.add('hscroll-dragging');
+      try{el.setPointerCapture(e.pointerId);}catch(_e){}
+    });
+
+    el.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      const dx=e.clientX-startX;
+      if(Math.abs(dx)>4) moved=true;
+      if(moved){
+        el.scrollLeft=startScroll-dx;
+        e.preventDefault();
+      }
+    });
+
+    function finish(e){
+      if(!dragging) return;
+      dragging=false;
+      el.classList.remove('hscroll-dragging');
+      try{el.releasePointerCapture(e.pointerId);}catch(_e){}
+    }
+
+    el.addEventListener('pointerup',finish);
+    el.addEventListener('pointercancel',finish);
+
+    // If a drag began on an alphabet button, don't trigger the letter
+    // after the user was only trying to scroll the row.
+    el.addEventListener('click',function(e){
+      if(moved){
+        e.preventDefault();
+        e.stopPropagation();
+        moved=false;
+      }
+    },true);
+  }
+
+  function enhanceAll(){
+    document.querySelectorAll(selector).forEach(enhance);
+  }
+
+  document.addEventListener('DOMContentLoaded',enhanceAll);
+  window.addEventListener('load',enhanceAll);
+
+  // Re-apply if app sections are rebuilt dynamically.
+  const observer=new MutationObserver(function(){
+    clearTimeout(window.__anuksCrossScrollTimer);
+    window.__anuksCrossScrollTimer=setTimeout(enhanceAll,75);
+  });
+
+  window.addEventListener('load',function(){
+    try{observer.observe(document.body,{childList:true,subtree:true});}catch(_e){}
+  });
+})();
+</script>
+
+
+<script id="custom-scrollbar-script-v33">
+(function(){
+  const selector='.flow-row,.refi-flow-row,.glossary-alpha-index';
+
+  function isDesktopPointer(){
+    return window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  }
+
+  function setupCustomBar(scroller){
+    if(!isDesktopPointer() || !scroller || scroller.dataset.customBarReady==='yes') return;
+    scroller.dataset.customBarReady='yes';
+
+    const track=document.createElement('div');
+    track.className='anuks-hscroll-control';
+    track.setAttribute('aria-hidden','true');
+
+    const thumb=document.createElement('div');
+    thumb.className='anuks-hscroll-thumb';
+    track.appendChild(thumb);
+
+    scroller.insertAdjacentElement('afterend',track);
+
+    let dragging=false;
+    let startClientX=0;
+    let startThumbLeft=0;
+
+    function metrics(){
+      const maxScroll=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
+      const trackWidth=track.clientWidth;
+      const ratio=scroller.scrollWidth ? scroller.clientWidth/scroller.scrollWidth : 1;
+      const thumbWidth=Math.max(34,Math.min(trackWidth,trackWidth*ratio));
+      const maxThumb=Math.max(0,trackWidth-thumbWidth);
+      return {maxScroll,trackWidth,thumbWidth,maxThumb};
+    }
+
+    function sync(){
+      const m=metrics();
+      track.classList.toggle('disabled',m.maxScroll<=1);
+      thumb.style.width=m.thumbWidth+'px';
+      const left=m.maxScroll>0 ? (scroller.scrollLeft/m.maxScroll)*m.maxThumb : 0;
+      thumb.style.transform='translateX('+left+'px)';
+    }
+
+    scroller.addEventListener('scroll',sync,{passive:true});
+    window.addEventListener('resize',sync);
+
+    track.addEventListener('click',function(e){
+      if(e.target===thumb) return;
+      const m=metrics();
+      if(m.maxScroll<=0) return;
+      const rect=track.getBoundingClientRect();
+      const clickX=e.clientX-rect.left;
+      const targetThumb=Math.max(0,Math.min(m.maxThumb,clickX-(m.thumbWidth/2)));
+      scroller.scrollLeft=(targetThumb/m.maxThumb)*m.maxScroll;
+    });
+
+    thumb.addEventListener('pointerdown',function(e){
+      if(e.button!==0) return;
+      dragging=true;
+      thumb.classList.add('dragging');
+      const transform=getComputedStyle(thumb).transform;
+      let currentLeft=0;
+      if(transform && transform!=='none'){
+        try{
+          currentLeft=new DOMMatrixReadOnly(transform).m41||0;
+        }catch(_e){}
+      }
+      startClientX=e.clientX;
+      startThumbLeft=currentLeft;
+      try{thumb.setPointerCapture(e.pointerId);}catch(_e){}
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    thumb.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      const m=metrics();
+      if(m.maxScroll<=0 || m.maxThumb<=0) return;
+      const next=Math.max(0,Math.min(m.maxThumb,startThumbLeft+(e.clientX-startClientX)));
+      scroller.scrollLeft=(next/m.maxThumb)*m.maxScroll;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    function finish(e){
+      if(!dragging) return;
+      dragging=false;
+      thumb.classList.remove('dragging');
+      try{thumb.releasePointerCapture(e.pointerId);}catch(_e){}
+    }
+    thumb.addEventListener('pointerup',finish);
+    thumb.addEventListener('pointercancel',finish);
+
+    // Preserve wheel and trackpad support on MacBook.
+    track.addEventListener('wheel',function(e){
+      const m=metrics();
+      if(m.maxScroll<=0) return;
+      const horizontal=Math.abs(e.deltaX)>=Math.abs(e.deltaY);
+      const delta=horizontal ? e.deltaX : e.deltaY;
+      if(!delta) return;
+      const before=scroller.scrollLeft;
+      scroller.scrollLeft=Math.max(0,Math.min(m.maxScroll,before+delta));
+      if(scroller.scrollLeft!==before) e.preventDefault();
+    },{passive:false});
+
+    requestAnimationFrame(sync);
+    setTimeout(sync,120);
+  }
+
+  function setupAll(){
+    if(!isDesktopPointer()) return;
+    document.querySelectorAll(selector).forEach(setupCustomBar);
+  }
+
+  document.addEventListener('DOMContentLoaded',setupAll);
+  window.addEventListener('load',setupAll);
+
+  const observer=new MutationObserver(function(){
+    clearTimeout(window.__anuksCustomScrollbarTimer);
+    window.__anuksCustomScrollbarTimer=setTimeout(setupAll,80);
+  });
+
+  window.addEventListener('load',function(){
+    try{observer.observe(document.body,{childList:true,subtree:true});}catch(_e){}
+  });
+})();
+</script>
+
+
+<script id="glossary-alpha-click-fix-v34">
+(function(){
+  function wireGlossaryAlphabet(){
+    const row=document.getElementById('glossaryAlphaIndex');
+    if(!row || row.dataset.alphaWired==='yes') return;
+    row.dataset.alphaWired='yes';
+
+    row.addEventListener('click',function(e){
+      const btn=e.target.closest('.glossary-alpha-btn');
+      if(!btn || !row.contains(btn)) return;
+
+      const letter=btn.dataset.letter || 'ALL';
+      filterGlossaryByLetter(letter,btn);
+    });
+
+    // MacBook/desktop: allow wheel/trackpad motion over the alphabet row
+    // without suppressing the letter buttons.
+    row.addEventListener('wheel',function(e){
+      if(row.scrollWidth <= row.clientWidth + 2) return;
+
+      const horizontal=Math.abs(e.deltaX)>=Math.abs(e.deltaY);
+      const delta=horizontal ? e.deltaX : e.deltaY;
+      if(!delta) return;
+
+      const max=row.scrollWidth-row.clientWidth;
+      const before=row.scrollLeft;
+      const after=Math.max(0,Math.min(max,before+delta));
+
+      if(after!==before){
+        row.scrollLeft=after;
+        e.preventDefault();
+      }
+    },{passive:false});
+  }
+
+  document.addEventListener('DOMContentLoaded',wireGlossaryAlphabet);
+  window.addEventListener('load',wireGlossaryAlphabet);
+})();
+</script>
+
 </body>
 </html>
